@@ -452,4 +452,326 @@
 
 //---------------------------- letcture 13 CALL BACK FUNCTION IN JS -----------------------------
 
+// // setTimeout takes the callback function and timer and store it in a seperate space
+// // it doesn't not wait and this gives the power of asynchronous in js
+// setTimeout( function (){
+//     console.log("timer");
+// }, 6000);
+
+// function x(y){
+//     console.log("x");
+//     y(); 
+// }
+// x(function y(){
+//     console.log("y");
+// })
+
+// // every thing executed through call stack 
+// // if any operation block the call stack that is known as blocking the main thread
+// // if a program x takes 20 to 30 sec to execute at that time call stack won't be able to execute any other function thati is known as blocking
+// // to avoid blocking we use asynchronous programming in js like setTimeout 
+
+
+
+// //------------------- DEEP ABOUT EVENT LISTENER
+// document.getElementById("clickMe").addEventListener("click", function xyz(){
+//     console.log("Button Clicked");
+// });
+
+
+//-----------CLOSURE DEMO WITH EVENT LISTENER IN JS
+// function enclose(){
+// let count = 0;
+// document.getElementById("clickMe")
+// .addEventListener("click", function xyz(){
+//     console.log("Button Clicked", ++count);
+// })
+// }
+// enclose();
+
+
+
+//--------------------GARBAGE COLLECTION AND REMOVE EVENT LISTENER IN JS
+
+//event listener takes alot of memory space it forms closure even when the call stack is empty it doesn't free up the memory space
+// that's the main reason to remove event listener when not needed
+
+
+
+//--------------------------LECTURE 14 setTimeout Trust issues --------------------------
+// console.log("Start");
+
+// setTimeout(function cb(){
+//     console.log("callback");
+// }, 5000);
+// console.log("End");
+
+// let start = new Date().getTime();
+// let end = start;
+// while(end < start + 10000){
+//     end = new Date().getTime();
+// }
+
+// console.log("While loop expires");
+
+
+
+
+//example of setTimeout with 0 ms
+// console.log("Start");
+
+// setTimeout(function cb(){
+//     console.log("callback");
+// }, 0);
+// console.log("End");
+
+//even if the timer is 0 ms the callback function still need to go through the call back queue
+// and wait for the call stack to be empty that's why callback will be executed after "End" is printed
+
+
+
+//----------------------------------- Lecture 15 Higher Order Functions in JS -----------------------------
+
+// function x (){
+//     console.log("x is callback function");
+
+// }
+// function y(x){
+//     x();
+//     console.log("y is higher order function");
+// }
+
+
+//---------------------- Below example has a problem of repetition of code ----------------------
+
+
+// const radius = [3, 4, 6, 2];
+
+// const calculateArea = function (radius){
+//     const output = [];
+//     for(let i = 0; i < radius.length; i++){
+//         output.push(Math.PI * radius[i]* radius[i]);
+//     }
+//     return output;
+// };
+// console.log(calculateArea(radius));
+
+// const calculateCircumference = function (radius){
+//     const output = [];
+//     for(let i = 0; i < radius.length; i++){
+//         output.push(2 * Math.PI * radius[i]);
+//     }
+//     return output;
+// }
+// console.log(calculateCircumference(radius));
+
+
+// const calculateDiameter = function (radius){
+//     const output = [];
+//     for(let i = 0; i < radius.length; i++){
+//         output.push(2 * radius[i]);
+//     }
+//     return output; 
+// }
+// console.log(calculateDiameter(radius));
+
+
+
+
+// //-------------------- problem solution ----------------------------
+
+// radius = [3 ,4 ,5 ,7];
+
+// const area = function (radius){
+//     return Math.PI * radius * radius;
+// }
+
+// const circumference =  function (radius){
+//     return 2 * Math.PI * radius;
+// }
+
+// const diameter = function (radius){
+//     return 2 * radius;
+// }
+// // Array.prototype.calculate function will be in a shared memory box where all the arrays can access it 
+
+// Array.prototype.calculate = function (logic){
+//     const output = [];
+//     for(let i = 0; i < this.length; i++){
+//         output.push(logic(this[i]));
+//     }
+//     return output;
+// }
+
+// console.log(radius.calculate(area));
+// console.log(radius.calculate(circumference));
+// console.log(radius.calculate(diameter));
+
+
+
+//--------------------- lecture 16 Map , filter , reduce function in JS -----------------------------
+
+// //--------------------- MAP FUNCTION IN JS
+// const arr = [ 5 , 1 , 3 , 2, 6];
+
+// // Transformation 
+// // Double - [10 , 2, 6, 4, 12]
+// //Triple - [15 , 3, 9, 6, 18]
+// //Binary - ["101" , "1" , "11", "10", "110"]
+// // map function helps to transform an array 
+// const double = function (x){
+//     return x * 2;
+// }
+// const binary = (x) =>{
+//     return x.toString(2);
+// }
+// const output = arr.map(double);
+// console.log(output);
+
+// const output2 = arr.map((x) => x * 3);
+// console.log(output2);
+
+// console.log(arr.map(binary)); 
+
+
+
+// //------------------------------ FILTER FUNCTION IN JS
+// const arr = [5 , 2, 4, 1, 56, 41, 23 , 12];
+
+
+// const oddFilter = arr.filter( (x) => x % 2);
+// console.log(oddFilter);
+
+// const evenFilter = arr.filter((x) => x % 2 ===  0);
+// console.log(evenFilter);
+
+
+//-------------------------------- Reduce Function in JS
+
+// const arr = [5 , 1, 3, 2, 6];
+
+// sum or arr
+
+// finding sum using non functional programming
+
+// function findSum (arr){
+//     let sum = 0;
+//     for(let i = 0; i < arr.length; i++){
+//         sum = sum + arr[i];
+//     }
+
+//     return sum;
+// }
+// console.log(findSum(arr));
+
+
+// //finding sum using reduce functional programming
+
+// const sumOutput = arr.reduce (function (accumulator , currentValue){
+//     accumulator = accumulator + currentValue;
+//     return accumulator;
+// }, 0)
+
+// console.log(sumOutput); 
+
+//-----------------------------------------------------------------
+
+// function findMax (arr){
+//     let max = arr[0];
+//     for(let i = 0; i < arr.length; i++){
+//         if(arr[i]> max) max = arr[i];
+//     }
+//     return max;
+// }
+// console.log(findMax(arr));
+
+// // finding max using reduce
+// const maxOutput = arr.reduce (function (accMax , currentValue){
+//     if(accMax < currentValue) {
+//         accMax = currentValue;
+//     }
+//     return accMax;
+// }, arr[0]);
+
+// console.log(maxOutput);
+
+
+//--------------------Complex examples of map , reduce , filter
+
+const users = [
+    {firstName : "akshay", lastName : "saini" , age : 26},
+    {firstName : "arnav", lastName : "raizada" , age : 40},
+    {firstName : "virat", lastName : "chuvan" , age : 35},
+    {firstName : "ishan", lastName : "bhooslay" , age : 26}
+];  
+
+// const output = users.map(x => x.firstName + " " + x.lastName)
+// console.log(output);
+
+//-------------Reduce example
+//----------- Question how many user have a particular age 
+
+//{26: 2 , 40 : 1, 35 : 1 }
+
+//---------- In simple way
+
+// const countAge = {};
+
+// for(let i = 0; i < users.length; i++){
+//     const age = users[i].age;
+
+//     if(countAge[age]) countAge[age] = countAge[age] + 1;
+//     else countAge[age] = 1;
+    
+// }
+// console.log(countAge);
+
+
+// //------------ now using reduce
+// const countAge = {};
+// const output = users.reduce(function (acc , curr){
+//     if(acc[curr.age]) acc[curr.age] = acc[curr.age] + 1;
+//     else acc[curr.age] = 1;
+//     return acc;
+// }, {})
+
+// console.log(output);
+
+
+//------------------------- Filter Example
+//------------------------------First name of all people whose age is less then thirty
+// ----------------- in simple 
+// let lessAge = (users) => {
+//     const ageList = [];
+//     for(let i = 0; i < users.length; i++){
+//         if(users[i].age < 30) ageList.push (users[i].firstName);
+//     }
+//     return ageList;
+// }
+
+// console.log(lessAge(users));
+
+// //---------------- using filter and map
+// const ageList = users.filter((x) => x.age < 30).map((x) => x.firstName); 
+// console.log(ageList);
+
+// //---------------- can achieve with reduce
+//  const output = users.reduce(function (acc , curr){
+//     if(curr.age < 30) acc.push (curr.firstName);
+//     return acc;
+//  }, [])
+// console.log(output);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
