@@ -698,12 +698,12 @@
 
 //--------------------Complex examples of map , reduce , filter
 
-const users = [
-    {firstName : "akshay", lastName : "saini" , age : 26},
-    {firstName : "arnav", lastName : "raizada" , age : 40},
-    {firstName : "virat", lastName : "chuvan" , age : 35},
-    {firstName : "ishan", lastName : "bhooslay" , age : 26}
-];  
+// const users = [
+//     {firstName : "akshay", lastName : "saini" , age : 26},
+//     {firstName : "arnav", lastName : "raizada" , age : 40},
+//     {firstName : "virat", lastName : "chuvan" , age : 35},
+//     {firstName : "ishan", lastName : "bhooslay" , age : 26}
+// ];  
 
 // const output = users.map(x => x.firstName + " " + x.lastName)
 // console.log(output);
@@ -763,15 +763,187 @@ const users = [
 // console.log(output);
 
 
+//---------------------------------------------SEASON 2 ---------------------------------------------------------------
+
+// ----------------------------------lecture 1  callBack (good part , bad part of callback) -----------------------------
+
+// console.log("Aoa");
+// setTimeout(() => console.log("Java Script") , 5000);
+// console.log("Season2")
+
+// this below is the example of call back hell (unmaintainable and unreadable ) , grows horizontally  Also known as "PYRAMID OF DOOM"
+// const cart =  ["heels" , "baggy pants" , "kameez"];
+ 
+// api.createOrder(cart ,  function (){ 
+
+//     api.proceedToPayment(function (){
+
+//         api.showOrderSummary(function (){
+
+//             api.updateWallet()
+//         })
+
+//     })
+// })
+
+ 
+// //------------------------------------ Inversion of control(loose controll over callback functions)----------------------
+// const cart =  ["heels" , "baggy pants" , "kameez"];
+ 
+// api.createOrder(cart ,  function (){ 
+
+//     api.proceedToPayment()
+// })
+
+// see paper notes for more   
 
 
+//--------------------------------------------LECTURE 2 PROMISES --------------------------------------
+//--------before promises how things works
+
+// const cart =  ["heels" , "baggy pants" , "kameez"];
+
+ // both below api are asyncronous and dependend on each other 
+// 1) createOrder(cart); // orderId return
+// 2) proceedToPayment(orderId); 
+
+//Not good
+// createOrder(cart , function (){
+//     proceedToPayment(orderId);
+// })
 
 
+//------------ problem solution for IOC------
+// assume promise is nothing but a data value 
+// create order will return object with data (some undefined property )
+//{data: undefined} //------this is promise
+// after some time the pass(few seconds let's say ) the promise data will fill automatically
+// {data: orderDetails } 
+// after data the promise object will attach with the callback function automatically
+
+// // below code is better then above
+// const promise = createOrder(cart); 
+
+// promise.then(function (orderId){
+//     proceedToPayment(orderId);
+// });
 
 
+// // reason : In previous we were blindly trusting  create order api (we were passing callback function to another funciton)
+// //and in the second case we are attaching call back function to a promise object (it gives guarantee that whenever there data inside promise object then it will call  callback funciton )
+// promise call callback function only once , it can  either be succes or failure
+// only three states in promise(pending ,  fullfilled , rejected)
+//promise objects are immutable 
+//---------------------------------------- DEEP Dive in PROMISES -------------------------------
+// fetch an api given by browser to make external calls
+
+// const GITHUB_API = "https://api.github.com/users/akshaymarch7"
+// const user = fetch(GITHUB_API);
+// console.log(user);
+
+// user.then(function (data){
+//     console.log(data);
+// })
+
+//-------------------------------------- PROMISE also helps in solving pyramid of doom -----------------------------
+// promise resolve issure of callback hell using promise chaning
+// callback hell below
+
+// const cart = ["shoes" , "pants" , "kurta"];
+
+// createOrder(cart , function (orderId){
+//     proceedToPayment(orderId , function(paymentInfo){
+//         showOrderSummary(paymentInfo , function(){
+//             updateWalletBalance();
+//         });
+//     });
+// });
+
+// promise chaining  (when we are chaning always return prmomise)
+// createOrder(cart).then(function (orderId){
+//     return proceedToPayment(orderId);
+// })
+// .then(function (paymentInfo){
+//     return showOrderSummary(paymentInfo);
+// })
+// .then(function(paymentInfo){
+//     return updateWalletBalance();
+// })
 
 
+// // above can also written as
+// createOrder(cart).then(orderIdv => proceedToPayment(orderId))
+// .then(paymentInfo => showOrderSummary(paymentInfo))
+// .then(paymentInfo => updateWalletBalance());
 
+//------------------------------ Lecture 3 CREATING PROMISES -----------------------------------------------
 
+// const cart = ["shoes" , "pants" , "kurtas"];
+const cart1 = [];
 
+createOrder(cart)
+    .then(function(orderId){
+        console.log(orderId);
+        return orderId; 
+    })
+    .then(function (orderId ){  
+        return proceedToPayment(orderId);
+    })
+    .then(function(paymentInfo){
+        console.log(paymentInfo);
+    })
+    .catch(function (err){
+        console.log(err.message);
+    });
 
+// above is the consumer part below is the producer part
+// resolve and reject are functions given by js to built promise 
+function createOrder(cart){
+    const pr  = new Promise(function (resolve , reject){
+        //create order
+        //validate cart
+        //order Id
+        if(!validateCart(cart)){
+            const err = new Error("cart is not valid");
+            reject(err);
+        }
+        // logic for createOrder
+         const orderId = "12345";
+         if(orderId){
+            setTimeout(function(){
+                resolve(orderId);
+            } , 5000) 
+         }
+ 
+    })
+
+    return pr;
+}
+
+function proceedToPayment(orderId){
+    ///
+    return new Promise(function (resolve , reject){
+        resolve("Payment successfull"); 
+    })
+}
+function validateCart(cart){
+    return Array.isArray(cart) && cart.length > 0;
+}
+
+// in the scenerio we want to proceed to payment even if the cart is failed (a case where there is promise chaining of 20 and we still want to move on so we put the catch () below the one we only want to check )
+// if we put in the end then it's will catch and print error if any one of the promise failed
+// below is the example
+
+createOrder(cart1)
+    .then(function(orderId){
+        console.log(orderId);
+        return orderId; 
+    })    .catch(function (err){
+        console.log(err.message);
+    })
+    .then(function (orderId ){  
+        return proceedToPayment(orderId);
+    })
+    .then(function(paymentInfo){
+        console.log(paymentInfo);
+    });
