@@ -65,20 +65,20 @@ Async await vs Promise.then / .catch
 
 //------------------------------------------DIVING DEEP INSIDE AYSNC / AWAIT --------------------------------------
 
-const p1 = new Promise((resolve , reject) =>{
-    setTimeout(() =>{
-        resolve("Promise resolved Value");
+// const p1 = new Promise((resolve , reject) =>{
+//     setTimeout(() =>{
+//         resolve("Promise resolved Value");
 
-    }, 10000 )
-}); 
+//     }, 10000 )
+// }); 
 
 
-const p2 = new Promise((resolve , reject) =>{
-    setTimeout(() =>{
-        resolve("Promise resolved Value");
+// const p2 = new Promise((resolve , reject) =>{
+//     setTimeout(() =>{
+//         resolve("Promise resolved Value");
 
-    }, 20000  )
-}); 
+//     }, 20000  )
+// }); 
 
 
 // //older way
@@ -116,9 +116,13 @@ const p2 = new Promise((resolve , reject) =>{
 
 //---------------------------------- Using fetch with promise ------------------------------------------------
 // const API_URL = "https://api.github.com/users/akshaymarch7";
-const API_URL = "https://api.gitdfajdajflda";
+// const API_URL = "https://api.gitdfajdajflda";
 
-async function handlePromise() {
+
+// function start form here
+
+
+// async function handlePromise() {
 // fetch is a promise when resolved gives response
 // fetch() => Response.json() => jsonValue (json is also a promise)
 
@@ -128,15 +132,54 @@ async function handlePromise() {
 
 // written like below can also write like above 
 // handling error also
-try{
-    fetch(API_URL).then((res) => res.json()).then((res) => console.log(res));
-}
-catch(err){
-    console.log(err);
-}
+// try{
+//     fetch(API_URL).then((res) => res.json()).then((res) => console.log(res));
+// }
+// catch(err){
+//     console.log(err);
+// }
+// } 
 
-} 
-handlePromise();
+// handlePromise();
    
+
 // can also do in traditional way(then no need to write try and catch)
 // handlePromise().catch(err => console.log(err)); 
+
+//----------------------------------------------------PROMISE API -----------------------------
+const p1 = new Promise((resolve , reject) =>{
+    //etTimeout(()=>resolve("p1 successful"), 3000);
+    setTimeout(()=>reject("p1 fail"), 5000);
+
+})
+
+const p2 = new Promise((resolve , reject) =>{ 
+   // setTimeout(()=>resolve("p2 successful"), 1000);
+    setTimeout(()=>reject("p2 fail"), 1000);
+
+})
+
+const p3 = new Promise((resolve , reject) =>{
+    //setTimeout(()=>resolve("p3 successful"), 2000);
+    setTimeout(()=>reject("p3 fail"), 3000);
+
+})
+
+// Promise.all([p1,p2, p3])
+// .then((res) => console.log(res))
+// .catch((err) => console.error(err));
+
+// Promise.allSettled([p1,p2, p3])
+// .then((res) => console.log(res))
+// .catch((err) => console.error(err));
+
+// Promise.race([p1,p2, p3])
+// .then((res) => console.log(res)) 
+// .catch((err) => console.error(err));
+
+Promise.any([p1,p2, p3])
+.then((res) => console.log(res))
+.catch((err) => {
+    console.error(err);
+    console.log(err.errors); // to show on browser console 
+});
